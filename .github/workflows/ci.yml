@@ -1,0 +1,30 @@
+# Runs week2.ipynb and star_practice.ipynb from top to bottom on a fresh machine every time you push.
+# Green check: every cell ran without an error.
+# Red X: some cell failed. Open the run and read the log to find out which one.
+name: Check notebooks
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  run-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install packages listed in requirements.txt
+        run: pip install -r requirements.txt
+
+      - name: Run the tutorial notebook from top to bottom
+        run: jupyter nbconvert --to notebook --execute week2.ipynb --output executed_week2.ipynb --ExecutePreprocessor.kernel_name=python3
+
+      - name: Run the practice notebook from top to bottom
+        run: jupyter nbconvert --to notebook --execute star_practice.ipynb --output executed_star_practice.ipynb --ExecutePreprocessor.kernel_name=python3
